@@ -1,4 +1,5 @@
 (function() {
+  'use strict';
 
   angular.module('ra.route', []).
 
@@ -227,6 +228,25 @@
 
 
             /**
+             * Same as get(), however returns a full path including protocol, host, and port
+             */
+            getFull: function(key, params) {
+              var full = [
+                $location.protocol() + '://',
+                $location.host()
+              ];
+
+              if ($location.port() && $location.port() !== 80) {
+                full.push(':', $location.port());
+              }
+
+              full.push(this.get(key, params));
+
+              return full.join('');
+            },
+
+
+            /**
              * Returns true if the current path is the route
              * ==========
              * $location.path()          => '/recipes'
@@ -265,7 +285,6 @@
              * Route.go('recipes.show', { slug: 'foo', q: 'bar' }) => $location.path('/recipes/foo').search({ q: 'bar' });
              */
             go: function(key, params, no_query) {
-              var path = this.get(key, params);
               $location.path(this.get(key, params));
 
               if (!no_query) {
