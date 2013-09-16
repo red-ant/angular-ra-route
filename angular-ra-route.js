@@ -52,11 +52,11 @@
 
         if (key.indexOf('.') > 0) {
           var keys = key.split('.');
-          base_key = keys[0];
-          key      = keys[1];
+          key      = keys.pop();
+          base_key = keys.join('.');
         }
 
-        return config.templateUrl(opts.templateName || key, base_key, opts);
+        return config.templateUrl(opts.templateName || key, opts.templateBase || base_key, opts);
       }
 
       function when(key, path, opts) {
@@ -132,6 +132,11 @@
           }
 
           when(key, path, opts);
+          return this;
+        },
+
+        redirect: function(from, to) {
+          $routeProvider.when(from, { redirectTo: to });
           return this;
         },
 

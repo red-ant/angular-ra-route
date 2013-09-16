@@ -54,6 +54,14 @@
         dist: {
           configFile: 'karma.conf.js'
         }
+      },
+
+      bump: {
+        options: {
+          files:       ['package.json', 'bower.json'],
+          commitFiles: ['package.json', 'bower.json'],
+          pushTo:      'origin'
+        }
       }
     });
 
