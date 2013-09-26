@@ -39,7 +39,14 @@ angular.module('ra.route.directives', []).
 
 
 // Source: src/services/route.js
-angular.module('ra.route.services', ['ngRoute']).
+(function() {
+var dependencies = [];
+
+if (angular.version.minor > 0) {
+  dependencies.push('ngRoute');
+}
+
+angular.module('ra.route.services', dependencies).
 
   provider('Route', function($routeProvider) {
 
@@ -404,3 +411,5 @@ angular.module('ra.route.services', ['ngRoute']).
       }
     };
   });
+
+})();

@@ -1,6 +1,13 @@
+(function() {
 'use strict';
 
-angular.module('ra.route.services', ['ngRoute']).
+var dependencies = [];
+
+if (angular.version.minor > 0) {
+  dependencies.push('ngRoute');
+}
+
+angular.module('ra.route.services', dependencies).
 
   provider('Route', function($routeProvider) {
 
@@ -365,3 +372,5 @@ angular.module('ra.route.services', ['ngRoute']).
       }
     };
   });
+
+})();
