@@ -4,7 +4,14 @@
   "node"          : true,
   "predef"        : [
     "angular",
-    "_"
+    "it",
+    "describe",
+    "expect",
+    "inject",
+    "jasmine",
+    "spyOn",
+    "beforeEach",
+    "afterEach"
   ],
 
   "debug"         : false,

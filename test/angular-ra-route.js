@@ -295,17 +295,6 @@ describe('Module: ra.route >', function() {
         expect(response).toEqual({ q: 'keyword' });
       });
 
-      it('should call $location.search with the object', function() {
-        $location.search({ q: 'keyword' });
-        $location.search.reset();
-
-        var response = Route.search({ q: 'new_keyword' });
-
-        expect($location.search).toHaveBeenCalledWith({ q: 'new_keyword' }, undefined);
-        expect($location.search()).toEqual({ q: 'new_keyword' });
-        expect(response).toBe(Route);
-      });
-
       it('should call $location.search with search, param_value', function() {
         Route.search('q', 'keyword');
 

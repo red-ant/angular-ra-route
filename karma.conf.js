@@ -1,6 +1,3 @@
-// Karma configuration
-// Generated on %DATE%
-
 module.exports = function(config) {
   config.set({
     basePath: '',
@@ -9,9 +6,10 @@ module.exports = function(config) {
 
     files: [
       'components/angular/angular.js',
+      'components/angular-route/angular-route.js',
       'components/angular-mocks/angular-mocks.js',
-      'src/angular-ra-route.js',
-      'test/angular-ra-route.js'
+      'src/**/*.js',
+      'test/**/*.js'
     ],
 
     exclude: [],

@@ -7,22 +7,35 @@
     require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
     grunt.initConfig({
-      dist: 'dist',
-
       clean: {
         dist: ['angular-ra-*.js']
       },
 
       concat: {
+        options: {
+          banner: "'use strict';\n",
+          process: function(src, filepath) {
+            return '// Source: ' + filepath + '\n' +
+                   src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
+          }
+        },
+
         dist: {
-          src:  ['src/angular-ra-route.js'],
+          src:  ['src/angular-ra-route.js', 'src/**/*.js'],
           dest: 'angular-ra-route.js'
+        }
+      },
+
+      ngmin: {
+        dist: {
+          src:  ['angular-ra-route.js'],
+          dest: 'angular-ra-route.min.js'
         }
       },
 
       uglify: {
         dist: {
-          src:  ['src/angular-ra-route.js'],
+          src:  ['angular-ra-route.min.js'],
           dest: 'angular-ra-route.min.js'
         }
       },
@@ -35,14 +48,23 @@
       },
 
       jshint: {
-        options: {
-          jshintrc: '.jshintrc'
+        src: {
+          options: {
+            jshintrc: '.jshintrc'
+          },
+          files: {
+            src: ['Gruntfile.js', 'src/{,*/}*.js']
+          }
         },
-        all: [
-          'Gruntfile.js',
-          'src/{,*/}*.js',
-          'test/{,*/}*.js',
-        ]
+
+        test: {
+          options: {
+            jshintrc: 'test/.jshintrc'
+          },
+          files: {
+            src: ['test/{,*/}*.js']
+          }
+        }
       },
 
       karma: {
@@ -66,6 +88,6 @@
     });
 
     grunt.registerTask('test', 'karma:dev');
-    grunt.registerTask('build', ['jshint:all', 'bower', 'karma:dist', 'clean', 'concat:dist', 'uglify:dist']);
+    grunt.registerTask('build', ['jshint', 'bower', 'karma:dist', 'clean', 'concat', 'ngmin', 'uglify']);
   };
 })();
