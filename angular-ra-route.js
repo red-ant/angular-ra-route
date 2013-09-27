@@ -23,6 +23,7 @@ angular.module('ra.route.directives', []).
               $scope.$watch(params, setRoute);
             } else {
               key = value;
+              setRoute();
             }
           }
         }
