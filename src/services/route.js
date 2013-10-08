@@ -160,6 +160,11 @@ angular.module('ra.route.services', dependencies).
             return url;
           }
 
+          // params => true removes all optional keys
+          if (params === true) {
+            params = {};
+          }
+
           // Allow for passing a string as the solitary parameter
           if (!angular.isObject(params)) {
             // Get the first key
@@ -173,9 +178,14 @@ angular.module('ra.route.services', dependencies).
           if (angular.isObject(params)) {
             angular.forEach(route_keys, function(key) {
               if (params[key.name]) {
-                url = url.replace(':' + key.name, params[key.name]);
+                var name = ':' + key.name;
+                if (key.optional) {
+                  name += '?';
+                }
+
+                url = url.replace(name, params[key.name]);
               } else if (key.optional) {
-                url = url.replace(':' + key.name, '');
+                url = url.replace('/:' + key.name + '?', '');
               }
             });
           }
@@ -321,6 +331,18 @@ angular.module('ra.route.services', dependencies).
               var query = getQueryParams(this.raw(key), params);
               $location.search(query);
             }
+
+            return this;
+          },
+
+
+          /**
+           * Same as go, but removes current from history
+           */
+          replace: function(key, params, no_query) {
+            this.go(key, params, no_query);
+
+            $location.replace();
 
             return this;
           },
