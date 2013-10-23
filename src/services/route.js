@@ -271,13 +271,17 @@ angular.module('ra.route.services', dependencies).
            * Same as get(), however returns a full path including protocol, host, and port
            */
           getFull: function(key, params) {
+            var port     = $location.port();
+            var protocol = $location.protocol();
+
             var full = [
-              $location.protocol() + '://',
+              protocol + '://',
               $location.host()
             ];
 
-            if ($location.port() && $location.port() !== 80) {
-              full.push(':', $location.port());
+            if ((protocol === 'http'  && port !== 80) ||
+                (protocol === 'https' && port !== 443)) {
+              full.push(':', port);
             }
 
             full.push(this.get(key, params));
