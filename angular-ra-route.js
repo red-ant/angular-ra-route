@@ -20,7 +20,7 @@ angular.module('ra.route.directives', []).
               key    = value[0].trim();
               params = value[1].trim();
 
-              $scope.$watch(params, setRoute);
+              $scope.$watch(params, setRoute, true);
             } else {
               key = value;
               setRoute();
