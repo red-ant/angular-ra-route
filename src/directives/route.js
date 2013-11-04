@@ -22,7 +22,7 @@ angular.module('ra.route.directives', []).
                 query_params = value[2].trim() === 'true';
               }
 
-              $scope.$watch(params, setRoute);
+              $scope.$watch(params, setRoute, true);
             } else {
               key = value;
               setRoute();

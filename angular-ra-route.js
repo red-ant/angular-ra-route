@@ -25,7 +25,7 @@ angular.module('ra.route.directives', []).
                 query_params = value[2].trim() === 'true';
               }
 
-              $scope.$watch(params, setRoute);
+              $scope.$watch(params, setRoute, true);
             } else {
               key = value;
               setRoute();
@@ -283,9 +283,6 @@ angular.module('ra.route.services', dependencies).
           definition: function(key) {
             return lookup && lookup[key];
           },
-          obj: function(key) {
-            return this.definition(key);
-          },
 
 
           /**
@@ -295,7 +292,6 @@ angular.module('ra.route.services', dependencies).
            */
           raw: function(key, shortened) {
             var route = this.definition(key);
-
             return route && route.path;
           },
 
@@ -390,17 +386,8 @@ angular.module('ra.route.services', dependencies).
            *
            * Route.go('recipes.show', { slug: 'foo', q: 'bar' }) => $location.path('/recipes/foo').search({ q: 'bar' });
            */
-          go: function(key, params, no_query) {
-            $location.path(this.get(key, params));
-
-            if (!no_query) {
-              var query = getQueryParams(this.raw(key), params);
-
-              if (query) {
-                $location.search(query);
-              }
-            }
-
+          go: function(key, params, append_query) {
+            $location.path(this.get(key, params, append_query));
             return this;
           },
 
@@ -408,11 +395,9 @@ angular.module('ra.route.services', dependencies).
           /**
            * Same as go, but removes current from history
            */
-          replace: function(key, params, no_query) {
-            this.go(key, params, no_query);
-
+          replace: function(key, params, append_query) {
+            this.go(key, params, append_query);
             $location.replace();
-
             return this;
           },
 
@@ -420,26 +405,16 @@ angular.module('ra.route.services', dependencies).
           /**
            * $location.path wrapper
            */
-          path: function(path) {
-            if (arguments.length === 0) {
-              return $location.path();
-            } else {
-              $location.path(path);
-              return this;
-            }
+          path: function() {
+            return $location.path.apply($location, arguments);
           },
 
 
           /**
            * $location.search wrapper
            */
-          search: function(search, param_value) {
-            if (arguments.length === 0) {
-              return $location.search();
-            } else {
-              $location.search(search, param_value);
-              return this;
-            }
+          search: function() {
+            return $location.search.apply($location, arguments);
           },
 
 
