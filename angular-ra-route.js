@@ -9,7 +9,8 @@ angular.module('ra.route.directives', []).
       restrict: 'A',
       priority: 99,
       link: function($scope, element, attr) {
-        var key;
+        var key,
+            query_params;
 
         function parseRoute(value) {
           if (value) {
@@ -20,7 +21,11 @@ angular.module('ra.route.directives', []).
               key    = value[0].trim();
               params = value[1].trim();
 
-              $scope.$watch(params, setRoute, true);
+              if (value[2]) {
+                query_params = value[2].trim() === 'true';
+              }
+
+              $scope.$watch(params, setRoute);
             } else {
               key = value;
               setRoute();
@@ -29,7 +34,7 @@ angular.module('ra.route.directives', []).
         }
 
         function setRoute(params) {
-          var path = Route.get(key, params);
+          var path = Route.get(key, params, query_params);
           attr.$set('href', path);
         }
 
@@ -37,7 +42,6 @@ angular.module('ra.route.directives', []).
       }
     };
   });
-
 
 // Source: src/services/route.js
 (function() {
@@ -234,21 +238,30 @@ angular.module('ra.route.services', dependencies).
         };
 
         var getQueryParams = function(url, params) {
-          var query_params = {};
+          var route_keys = getRouteKeys(url),
+              params_obj = angular.copy(params);
 
-          if (angular.isObject(params)) {
-            angular.forEach(params, function(v, k) {
-              var regex = new RegExp('\\/(\\:'+ k +')(\\/|$)');
-              var match = url.match(regex);
-              if (match && match[1]) {
-                return;
-              }
+          angular.forEach(route_keys, function(key) {
+            if (params_obj[key.name]) {
+              delete params_obj[key.name];
+            }
+          });
 
-              query_params[k] = v;
-            });
-          }
+          return params_obj;
+        };
 
-          return query_params;
+        var toQueryString = function(obj, prefix) {
+          var query = [];
+
+          angular.forEach(obj, function(value, key) {
+            if (angular.isString(value) ||
+                angular.isNumber(value) ||
+                typeof value === 'boolean') {
+              query.push(encodeURIComponent(key) +'='+ encodeURIComponent(value));
+            }
+          });
+
+          return (prefix ? '?' : '') + query.join('&');
         };
 
         return {
@@ -296,11 +309,20 @@ angular.module('ra.route.services', dependencies).
            * Route.get('recipes.show', { slug: 'foo' }) => '/recipes/foo'
            * Route.get('recipes.show', 'bar')           => '/recipes/bar'
            */
-          get: function(key, params) {
-            var path = this.raw(key);
+          get: function(key, params, append_query) {
+            var path = this.raw(key),
+                query_string;
+
+            if (append_query) {
+              query_string = toQueryString(getQueryParams(path, params), true);
+            }
 
             if (path && params) {
               path = replaceUrlParams(path, params);
+            }
+
+            if (query_string) {
+              path = path + query_string;
             }
 
             return path;
@@ -310,7 +332,7 @@ angular.module('ra.route.services', dependencies).
           /**
            * Same as get(), however returns a full path including protocol, host, and port
            */
-          getFull: function(key, params) {
+          getFull: function() {
             var port     = $location.port();
             var protocol = $location.protocol();
 
@@ -324,7 +346,7 @@ angular.module('ra.route.services', dependencies).
               full.push(':', port);
             }
 
-            full.push(this.get(key, params));
+            full.push(this.get.apply(this, arguments));
 
             return full.join('');
           },
@@ -373,7 +395,10 @@ angular.module('ra.route.services', dependencies).
 
             if (!no_query) {
               var query = getQueryParams(this.raw(key), params);
-              $location.search(query);
+
+              if (query) {
+                $location.search(query);
+              }
             }
 
             return this;
