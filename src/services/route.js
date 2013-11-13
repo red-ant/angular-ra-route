@@ -141,6 +141,11 @@ angular.module('ra.route.services', dependencies).
         return this;
       },
 
+      redirect: function(from, to) {
+        $routeProvider.when(from, { redirectTo: to });
+        return this;
+      },
+
       otherwise: function(otherwise) {
         $routeProvider.otherwise(otherwise);
         return this;
