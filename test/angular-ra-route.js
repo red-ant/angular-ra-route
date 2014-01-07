@@ -291,13 +291,18 @@ describe('Module: ra.route >', function() {
     });*/
 
     describe('goSearch >', function() {
-      it('should call go with the corret parameters', function() {
+      it('should call Route.go', function() {
         Route.go = jasmine.createSpy().andReturn('foo');
+        Route.goSearch('recipe.index', 'keyword');
 
-        var response = Route.goSearch('recipe.index', 'keyword');
+        expect(Route.go).toHaveBeenCalledWith('recipe.index');
+      });
 
-        expect(Route.go).toHaveBeenCalledWith('recipe.index', { q: 'keyword' });
-        expect(response).toBe('foo');
+      it('should call Route.search', function() {
+        Route.search = jasmine.createSpy().andReturn('foo');
+        Route.goSearch('recipe.index', 'keyword');
+
+        expect(Route.search).toHaveBeenCalledWith({ q: 'keyword' });
       });
     });
   });

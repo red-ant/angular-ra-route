@@ -384,7 +384,7 @@ angular.module('ra.route.services', dependencies).
            * returns $location
            *
            * Route.go('recipes.index')                           => $location.path('/recipes')
-           * Route.go('reipces.index').search({ q: 'query' })    => $location.path('/recipes').search({ q: 'query' });
+           * Route.go('recipes.index').search({ q: 'query' })    => $location.path('/recipes').search({ q: 'query' });
            *
            * Allows passing query params, i.e. any keys in params that are not
            * path parameters. Pass no_query as true to skip this.
@@ -437,7 +437,7 @@ angular.module('ra.route.services', dependencies).
            * Search convenience method
            */
           goSearch: function(key, query) {
-            return this.go(key, { q: query });
+            return this.go(key).search({ q: query });
           }
         };
       }
