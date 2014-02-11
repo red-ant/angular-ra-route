@@ -362,7 +362,7 @@ angular.module('ra.route.services', dependencies).
            * Route.go('recipes.show', { slug: 'foo', q: 'bar' }) => $location.path('/recipes/foo').search({ q: 'bar' });
            */
           go: function(key, params, append_query) {
-            $location.path(this.get(key, params, append_query));
+            $location.url(this.get(key, params, append_query));
             return this;
           },
 
