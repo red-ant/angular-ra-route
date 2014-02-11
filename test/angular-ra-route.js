@@ -38,6 +38,7 @@ describe('Module: ra.route >', function() {
 
         spyOn($location, 'path').andCallThrough();
         spyOn($location, 'search').andCallThrough();
+        spyOn($location, 'url').andCallThrough();
       });
     });
 
@@ -211,30 +212,29 @@ describe('Module: ra.route >', function() {
 
     describe('go >', function() {
       beforeEach(function() {
-        $location.path.reset();
-        $location.search.reset();
+        $location.url.reset();
       });
 
-      it('should call $location.path with the route', function() {
+      it('should call $location.url with the route', function() {
         var response = Route.go('recipe.index');
 
         expect(response).toBe(Route);
-        expect($location.path).toHaveBeenCalledWith('/recipes');
+        expect($location.url).toHaveBeenCalledWith('/recipes');
       });
 
-      it('should call $location.path and replace the parameters', function() {
+      it('should call $location.url and replace the parameters', function() {
         Route.go('recipe.show', '1-banana');
-        expect($location.path).toHaveBeenCalledWith('/recipes/1-banana');
+        expect($location.url).toHaveBeenCalledWith('/recipes/1-banana');
       });
 
-      it('should call $location.path and replace the parameters call $location.search with the rest of the parameters', function() {
+      it('should ignore additional object values if append_query is not set', function() {
         Route.go('recipe.show', { slug: '2-apple', filter: 'snack' });
-        expect($location.path).toHaveBeenCalledWith('/recipes/2-apple');
+        expect($location.url).toHaveBeenCalledWith('/recipes/2-apple');
       });
 
-      it('should not call $location.search if no_query is set to true', function() {
+      it('should append a query string if append_query is set to true', function() {
         Route.go('recipe.show', { slug: '3-orange', filter: 'snack' }, true);
-        expect($location.path).toHaveBeenCalledWith('/recipes/3-orange?filter=snack');
+        expect($location.url).toHaveBeenCalledWith('/recipes/3-orange?filter=snack');
       });
     });
 
