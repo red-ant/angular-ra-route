@@ -155,7 +155,21 @@ angular.module('ra.route.services', dependencies).
         // Returns keys from $route
         var getRouteKeys = function(url) {
           var route_def = $route.routes[url];
-          return route_def && route_def.keys;
+
+          if (route_def && route_def.keys) {
+            return route_def.keys;
+          }
+
+          // We have to build them ourselves
+          var re = /:(\w+)/g,
+              param_match,
+              keys = [];
+
+          while ((param_match = re.exec(url)) !== null) {
+            keys.push({ name: param_match[1] });
+          }
+
+          return keys;
         };
 
         var replaceUrlParams = function(url, params) {
