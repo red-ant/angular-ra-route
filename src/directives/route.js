@@ -35,7 +35,18 @@ angular.module('ra.route.directives', []).
           attr.$set('href', path);
         }
 
-        attr.$observe('route', parseRoute);
+        if (attr.routeParams) {
+          key = attr.route;
+          query_params = 'routeAppendQuery' in attr;
+
+          $scope.$watch(attr.routeParams, function(new_val, old_val) {
+            if (new_val) {
+              setRoute(new_val);
+            }
+          }, true);
+        } else {
+          attr.$observe('route', parseRoute);
+        }
       }
     };
   });
