@@ -280,12 +280,16 @@ angular.module('ra.route.services', dependencies).
            * Route.get('recipes.show', { slug: 'foo' }) => '/recipes/foo'
            * Route.get('recipes.show', 'bar')           => '/recipes/bar'
            */
-          get: function(key, params, append_query) {
+          get: function(key, params, query) {
             var path = this.raw(key),
                 query_string;
 
-            if (append_query) {
-              query_string = toQueryString(getQueryParams(path, params), true);
+            if (query) {
+              if (query === true) {
+                query_string = toQueryString(getQueryParams(path, params), true);
+              } else if (angular.isObject(query)) {
+                query_string = toQueryString(query, true);
+              }
             }
 
             if (path && params) {

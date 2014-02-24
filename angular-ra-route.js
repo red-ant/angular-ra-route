@@ -10,11 +10,12 @@ angular.module('ra.route.directives', []).
       priority: 99,
       link: function($scope, element, attr) {
         var key,
-            query_params;
+            params,
+            search;
 
         function parseRoute(value) {
           if (value) {
-            var params = {};
+            params = {};
 
             if (value.indexOf(',') > -1) {
               value  = value.split(',');
@@ -22,10 +23,10 @@ angular.module('ra.route.directives', []).
               params = value[1].trim();
 
               if (value[2]) {
-                query_params = value[2].trim() === 'true';
+                setSearch(true);
               }
 
-              $scope.$watch(params, setRoute, true);
+              $scope.$watch(params, setParams, true);
             } else {
               key = value;
               setRoute();
@@ -33,23 +34,30 @@ angular.module('ra.route.directives', []).
           }
         }
 
-        function setRoute(params) {
-          var path = Route.get(key, params, query_params);
+        function setParams(p) {
+          params = p;
+          setRoute();
+        }
+
+        function setSearch(s) {
+          search = s;
+          setRoute();
+        }
+
+        function setRoute() {
+          var path = Route.get(key, params, search);
           attr.$set('href', path);
         }
 
         if (attr.routeParams) {
-          key = attr.route;
-          query_params = 'routeAppendQuery' in attr;
-
-          $scope.$watch(attr.routeParams, function(new_val, old_val) {
-            if (new_val) {
-              setRoute(new_val);
-            }
-          }, true);
-        } else {
-          attr.$observe('route', parseRoute);
+          $scope.$watch(attr.routeParams, setParams, true);
         }
+
+        if (attr.routeSearch) {
+          $scope.$watch(attr.routeSearch, setSearch, true);
+        }
+
+        attr.$observe('route', parseRoute);
       }
     };
   });
@@ -335,12 +343,16 @@ angular.module('ra.route.services', dependencies).
            * Route.get('recipes.show', { slug: 'foo' }) => '/recipes/foo'
            * Route.get('recipes.show', 'bar')           => '/recipes/bar'
            */
-          get: function(key, params, append_query) {
+          get: function(key, params, query) {
             var path = this.raw(key),
                 query_string;
 
-            if (append_query) {
-              query_string = toQueryString(getQueryParams(path, params), true);
+            if (query) {
+              if (query === true) {
+                query_string = toQueryString(getQueryParams(path, params), true);
+              } else if (angular.isObject(query)) {
+                query_string = toQueryString(query, true);
+              }
             }
 
             if (path && params) {
