@@ -185,7 +185,7 @@ angular.module('ra.route.services', dependencies).
           }
 
           // Allow for passing a string as the solitary parameter
-          if (!angular.isObject(params)) {
+          if (route_keys.length && !angular.isObject(params)) {
             // Get the first key
             var key = route_keys[0];
             url = url.replace(':' + key.name, params);
