@@ -82,3 +82,14 @@ You can append a search query using this attribute.
   Edit chicken recipe: Jerked chicken
 </a>
 ```
+
+## grunt tasks
+
+* Make sure grunt is installed `npm -g install grunt-cli` and `npm install`
+* Make your changes in `src/`
+* Run `grunt build` to fire tests, clean, concat, and minify.
+* If all went well, commit your changes. `git commit -am "Update README.md"`
+* Run `grunt bump` to increment versions in package + bower, includes another commit + push.
+  * `grunt bump` and `grunt bump:patch` will increment v0.0.1 to v0.0.2
+  * `grunt bump:minor` will increment v0.0.1 to v0.1.0
+  * `grunt bump:major` will increment v0.0.1 to v1.0.0
