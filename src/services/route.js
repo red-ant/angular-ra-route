@@ -334,8 +334,9 @@ angular.module('ra.route.services', dependencies).
            * Route.is('recipes.index') => true
            * Route.is('recipes.show')  => false
            */
-          is: function(key, params) {
-            return this.get(key, params) === $location.path();
+          is: function(key, params, location) {
+            location = location || $location.path();
+            return this.get(key, params) === location;
           },
 
 
@@ -346,8 +347,9 @@ angular.module('ra.route.services', dependencies).
            * Route.matches('recipes.index') => false
            * Route.matches('recipes.show')  => true
            */
-          matches: function(key) {
-            return pathsMatch(this.raw(key, true), $location.path());
+          matches: function(key, location) {
+            location = location || $location.path();
+            return pathsMatch(this.raw(key, true), location);
           },
 
 
