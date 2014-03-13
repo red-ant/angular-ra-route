@@ -10,13 +10,11 @@ angular.module('ra.route.directives', []).
       priority: 99,
       link: function($scope, element, attr) {
         var key,
-            params,
+            params = {},
             search;
 
         function parseRoute(value) {
           if (value) {
-            params = {};
-
             if (value.indexOf(',') > -1) {
               value  = value.split(',');
               key    = value[0].trim();
