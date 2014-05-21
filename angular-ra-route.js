@@ -270,6 +270,9 @@ angular.module('ra.route.services', dependencies).
             });
           }
 
+          // Remove any greedy operators
+          url = url.replace(/\*/g, '');
+
           return url;
         };
 
